@@ -1,7 +1,7 @@
 package ddl
 
 import (
-	"github.com/tinywasm/model"
+	"webtyp.com/model"
 )
 
 // Op is a DDL operation (schema), distinct from storage's DML Action.

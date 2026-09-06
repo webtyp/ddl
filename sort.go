@@ -1,15 +1,15 @@
 package ddl
 
 import (
-	"github.com/tinywasm/fmt"
-	"github.com/tinywasm/model"
+	"webtyp.com/fmt"
+	"webtyp.com/model"
 )
 
 // TopologicalSort returns models sorted so parents come before children (Kahn's BFS).
 // Models not implementing SchemaExt() are treated as having no FK deps.
-// Returns error on circular FK dependency. Moved here from tinywasm/ddlc: ordering
+// Returns error on circular FK dependency. Moved here from webtyp/ddlc: ordering
 // CREATE TABLE statements by FK dependency is a DDL concern, not a generation-tool concern
-// — see DDLC_DEPENDENCY_PROPOSAL.md in tinywasm/app-releases/docs.
+// — see DDLC_DEPENDENCY_PROPOSAL.md in webtyp/app-releases/docs.
 func TopologicalSort(models []model.Model) ([]model.Model, error) {
 	byName := make(map[string]model.Model, len(models))
 	rdeps := make(map[string][]string)

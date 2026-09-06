@@ -3,10 +3,10 @@ package conformance
 import (
 	"testing"
 
-	"github.com/tinywasm/ddl"
-	"github.com/tinywasm/model"
-	"github.com/tinywasm/storage"
-	"github.com/tinywasm/storage/conformance"
+	"webtyp.com/ddl"
+	"webtyp.com/model"
+	"webtyp.com/storage"
+	"webtyp.com/storage/conformance"
 )
 
 type Factory struct {

@@ -1,7 +1,7 @@
 package ddl
 
 import (
-	"github.com/tinywasm/model"
+	"webtyp.com/model"
 )
 
 // Execer is the only capability ddl.DB always needs from its connection:

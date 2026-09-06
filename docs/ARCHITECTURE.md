@@ -1,15 +1,15 @@
-# Architecture — tinywasm/ddl
+# Architecture — webtyp/ddl
 
 ## What this package is
 
-`tinywasm/ddl` is the **runtime DDL** counterpart of [`tinywasm/storage`](https://github.com/tinywasm/storage)
+`webtyp/ddl` is the **runtime DDL** counterpart of [`webtyp/storage`](https://github.com/webtyp/storage)
 (the neutral DML port: contract + value types + conformance + mem + mock). It owns schema management —
 `CreateTable`/`DropTable`/`CreateDatabase`/`Sync`/`SyncSchema` — and the executable contract
 `ddl/conformance` that SQL backends (`sqlt`, `postgres`) prove themselves against, mirroring
 `storage/conformance` for DML.
 
-[`tinywasm/orm`](https://github.com/tinywasm/orm) is a **sibling**, not a dependency: both `ddl` and
-`orm` sit on top of `storage`, but neither imports the other. `tinywasm/ddlc` is a separate, unrelated
+[`webtyp/orm`](https://github.com/webtyp/orm) is a **sibling**, not a dependency: both `ddl` and
+`orm` sit on top of `storage`, but neither imports the other. `webtyp/ddlc` is a separate, unrelated
 build-time codegen/CLI leaf (`Exporter.ExportDDL`, `TopologicalSort`) that *renders* SQL DDL; `ddl`
 *executes* schema changes at runtime through a `storage.Conn` — it does not import `ddlc`.
 
@@ -17,9 +17,9 @@ Dependency direction is one-way: `storage` → `ddl`. `storage` never imports `d
 
 ## Why the split from `orm`
 
-`tinywasm/orm` used to mix DML (operating on data) and DDL (creating/migrating schema) on the same
+`webtyp/orm` used to mix DML (operating on data) and DDL (creating/migrating schema) on the same
 `*orm.DB`. That coupled every backend adapter to the full ORM surface just to satisfy interfaces. The
-DML contract was extracted to the neutral port `tinywasm/storage`; DDL was extracted here. `ddl` depends
+DML contract was extracted to the neutral port `webtyp/storage`; DDL was extracted here. `ddl` depends
 only on `storage`, never on `orm` — so backends that need schema management don't have to pull in an
 ORM to get it.
 
@@ -93,5 +93,5 @@ instead of a `model.Model` — it wraps them in an internal model shim.
 `package conformance`, mirroring `storage/conformance`. A `Factory` supplies a fresh `ddl.DB` plus the
 underlying `storage.Conn` and a column-introspection closure; `Run(t, Factory)` exercises table
 creation, idempotency, `Sync`'s add-column path, and table drop, using `conformance.Widget` from
-`github.com/tinywasm/storage/conformance` (not duplicated here). Only SQL backends (`sqlt`, `postgres`)
+`webtyp.com/storage/conformance` (not duplicated here). Only SQL backends (`sqlt`, `postgres`)
 run it — `indexdb`/`storage/mem` don't do DDL.

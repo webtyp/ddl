@@ -1,8 +1,8 @@
 package ddl
 
 import (
-	"github.com/tinywasm/model"
-	"github.com/tinywasm/storage"
+	"webtyp.com/model"
+	"webtyp.com/storage"
 )
 
 // RenameProvider is implemented by generated models when db:"old_name=X" tags are present.
@@ -45,7 +45,7 @@ func (d *DB) Sync(models ...model.Model) error {
 	// boundConn re-pairs the transaction-bound Executor with the original connection's
 	// Compiler (compiling doesn't depend on being inside a transaction, only executing
 	// does) — same pattern orm.DB.Tx uses for the exact same reason, see
-	// https://github.com/tinywasm/orm/blob/main/docs/PLAN.md §4.3. ddl doesn't import orm,
+	// https://github.com/webtyp/orm/blob/main/docs/PLAN.md §4.3. ddl doesn't import orm,
 	// so this is a small independent copy of the same idea, not a shared type.
 	var conn storage.Conn = boundConn{TxBoundExecutor: bound, Compiler: dmlCompiler}
 	intro, hasIntro := d.conn.(TableIntrospector)

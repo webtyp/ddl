@@ -1,10 +1,10 @@
-module github.com/tinywasm/ddl
+module webtyp.com/ddl
 
 go 1.25.2
 
 require (
-	github.com/tinywasm/model v0.1.7
-	github.com/tinywasm/storage v0.0.6
+	webtyp.com/model v0.1.7
+	webtyp.com/storage v0.0.6
 )
 
-require github.com/tinywasm/fmt v0.25.7
+require webtyp.com/fmt v0.25.7
