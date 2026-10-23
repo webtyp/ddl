@@ -3,7 +3,7 @@ module webtyp.com/ddl
 go 1.25.2
 
 require (
-	webtyp.com/model v0.2.5
+	webtyp.com/model v0.2.6
 	webtyp.com/storage v0.1.8
 )
 
