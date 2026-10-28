@@ -3,8 +3,10 @@ PLAN: "feat: Step and Capture — the tables a list of migrations creates, witho
 TAG: v0.0.32
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 8581247014584470465
+PR: https://github.com/webtyp/ddl/pull/3
+REVIEWED_COMMIT: 635ee383aeb5d3e6771ee4599c25b8010253ca72
 ---
 
 > Read AGENTS.md at the repo root before any change.
