@@ -3,6 +3,8 @@ PLAN: "feat: Step and Capture — the tables a list of migrations creates, witho
 TAG: v0.0.32
 EXECUTOR: jules
 REVIEWER: none
+STATUS: running
+SESSION: 8581247014584470465
 ---
 
 > Read AGENTS.md at the repo root before any change.
