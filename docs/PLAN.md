@@ -2,8 +2,10 @@
 PLAN: "fix!: CreateTable is no longer public — Sync is the one way to create and evolve a table"
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 12270730623465071777
+PR: https://github.com/webtyp/ddl/pull/4
+REVIEWED_COMMIT: dd979018eace044ab9a84df63b3a433b1f0e78e7
 ---
 
 > Read AGENTS.md at the repo root before any change.
