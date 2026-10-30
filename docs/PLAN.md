@@ -2,6 +2,8 @@
 PLAN: "fix!: CreateTable is no longer public — Sync is the one way to create and evolve a table"
 EXECUTOR: jules
 REVIEWER: none
+STATUS: running
+SESSION: 12270730623465071777
 ---
 
 > Read AGENTS.md at the repo root before any change.
