@@ -33,9 +33,9 @@ Working notes for AI agents operating in this library. For end-user docs see [RE
 [`webtyp/storage`](https://github.com/webtyp/storage) (the storage port — contract + DML value
 types + conformance + mem + mock). [`webtyp/orm`](https://github.com/webtyp/orm) is a **sibling**,
 not a dependency: both `ddl` and `orm` sit on top of `storage`, but neither imports the other. `ddl`
-owns schema management: `CreateTable`/`DropTable`/`CreateDatabase`/`Sync`/`SyncSchema`, plus
+owns schema management: `DropTable`/`CreateDatabase`/`Sync`/`SyncSchema`, plus
 `ddl/conformance` — the executable contract SQL backends (`sqlt`, `postgres`) prove themselves against,
-mirroring `storage/conformance` for DML. `webtyp/ddlc` stays the build-time codegen/CLI leaf
+mirroring `storage/conformance` for DML. There is no public CreateTable: Sync creates a missing table and adds missing columns; a create-only call would leave installed databases without new fields. `webtyp/ddlc` stays the build-time codegen/CLI leaf
 (`Exporter.ExportDDL`, `TopologicalSort`) — `ddl` is what *executes* the DDL that `ddlc` renders, at
 runtime; `ddl` does not import `ddlc` as a library.
 
@@ -89,7 +89,7 @@ wasm target — so there is no "backend-only" exemption.
 | File / Dir | Role |
 |------------|------|
 | `compiler.go` | `Op`, `Stmt` (incl. `ColumnName` for `OpDropColumn`), `Compiler` (DDL) — dialect adapters implement `CompileDDL` |
-| `db.go` | `ddl.DB`, `New(conn storage.Conn, ddlCompiler Compiler)`, `CreateTable`/`DropTable`/`CreateDatabase` |
+| `db.go` | `ddl.DB`, `New(conn storage.Conn, ddlCompiler Compiler)`, `DropTable`/`CreateDatabase` |
 | `sync.go` | `Sync`/`SyncSchema` algorithm (map-free — see rule above), `boundConn` for transactions |
 | `schema.go` | `TableIntrospector`, `SchemaInspector`, `ColumnInfo` |
 | `conformance/` | Executable DDL contract (`Run(t, Factory)`), SQL backends only |

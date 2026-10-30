@@ -113,7 +113,7 @@ func (d *DB) syncModel(m model.Model) error {
 	schema := m.Schema()
 
 	// 1. Emit OpCreateTable (idempotent)
-	if err := d.CreateTable(m); err != nil {
+	if err := d.createTable(m); err != nil {
 		return wrapSyncErr(err)
 	}
 

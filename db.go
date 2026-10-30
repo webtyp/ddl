@@ -39,8 +39,8 @@ func (d *DB) logw(messages ...any) {
 	}
 }
 
-// CreateTable creates a new table for the given model.
-func (d *DB) CreateTable(m model.Model) error {
+// createTable emits CREATE TABLE IF NOT EXISTS for m: Sync's first step. Not public: on its own it never evolves an existing table.
+func (d *DB) createTable(m model.Model) error {
 	q, args, err := d.ddlCompiler.CompileDDL(Stmt{Op: OpCreateTable, Table: m.ModelName()}, m)
 	if err != nil {
 		return err
