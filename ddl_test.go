@@ -34,29 +34,6 @@ func (m *mockConn) TableColumns(table string) ([]string, error) {
 	return m.columns, m.colsErr
 }
 
-func TestCreateTable(t *testing.T) {
-	mExec := &mock.Executor{}
-	mComp := &mock.Compiler{}
-	conn := &mockConn{Executor: mExec, Compiler: mComp}
-	ddlComp := &mockDDLCompiler{}
-
-	db := ddl.New(conn, ddlComp)
-	m := &mock.Model{Table: "test_table"}
-
-	err := db.CreateTable(m)
-	if err != nil {
-		t.Fatalf("unexpected error: %v", err)
-	}
-
-	if len(ddlComp.Stmts) != 1 || ddlComp.Stmts[0].Op != ddl.OpCreateTable || ddlComp.Stmts[0].Table != "test_table" {
-		t.Fatalf("unexpected DDL compiled statement: %v", ddlComp.Stmts)
-	}
-
-	if len(mExec.ExecutedQueries) != 1 || mExec.ExecutedQueries[0] != "test_table_compiled" {
-		t.Fatalf("unexpected executed query: %v", mExec.ExecutedQueries)
-	}
-}
-
 func TestDropTable(t *testing.T) {
 	mExec := &mock.Executor{}
 	mComp := &mock.Compiler{}

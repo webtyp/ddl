@@ -4,9 +4,9 @@
 
 `webtyp/ddl` is the **runtime DDL** counterpart of [`webtyp/storage`](https://github.com/webtyp/storage)
 (the neutral DML port: contract + value types + conformance + mem + mock). It owns schema management —
-`CreateTable`/`DropTable`/`CreateDatabase`/`Sync`/`SyncSchema` — and the executable contract
+`DropTable`/`CreateDatabase`/`Sync`/`SyncSchema` — and the executable contract
 `ddl/conformance` that SQL backends (`sqlt`, `postgres`) prove themselves against, mirroring
-`storage/conformance` for DML.
+`storage/conformance` for DML. There is no public CreateTable: Sync creates a missing table and adds missing columns; a create-only call would leave installed databases without new fields.
 
 [`webtyp/orm`](https://github.com/webtyp/orm) is a **sibling**, not a dependency: both `ddl` and
 `orm` sit on top of `storage`, but neither imports the other. `webtyp/ddlc` is a separate, unrelated
@@ -55,7 +55,7 @@ A `storage.Conn` implementation may optionally implement:
 
 `Sync(models ...model.Model)` reconciles the database schema to match the given models:
 
-1. `CreateTable` per model (idempotent).
+1. `CREATE TABLE IF NOT EXISTS` per model (the private `createTable`).
 2. If `conn` doesn't implement `TableIntrospector`: additive-only `AddColumn` per field, best-effort.
 3. Otherwise, read `existingCols` via `TableColumns`.
 4. If the model implements `RenameProvider` (`OldNames() map[string]string` — a pre-existing external

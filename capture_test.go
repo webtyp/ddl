@@ -12,7 +12,7 @@ import (
 func TestCapture_ListsEveryCreatedTableInOrderWithItsStep(t *testing.T) {
 	steps := []ddl.Step{
 		{Name: "auth", Run: func(conn ddl.Execer, c ddl.Compiler) error {
-			return ddl.New(conn, c).CreateTable(&mock.Model{Table: "tenant"})
+			return ddl.New(conn, c).Sync(&mock.Model{Table: "tenant"})
 		}},
 		{Name: "rbac", Run: func(conn ddl.Execer, c ddl.Compiler) error {
 			if err := ddl.New(conn, c).Sync(&mock.Model{Table: "role"}, &mock.Model{Table: "user_role"}); err != nil {

@@ -20,9 +20,9 @@ func Run(t *testing.T, f Factory) {
 	t.Run("create_table_makes_expected_columns", func(t *testing.T) {
 		schema, _, cols := f.New(t)
 		w := &conformance.Widget{}
-		err := schema.CreateTable(w)
+		err := schema.Sync(w)
 		if err != nil {
-			t.Fatalf("CreateTable failed: %v", err)
+			t.Fatalf("Sync failed: %v", err)
 		}
 		c := cols(w.ModelName())
 		// Expected columns for conformance.Widget are: id, name, qty, active
@@ -47,22 +47,22 @@ func Run(t *testing.T, f Factory) {
 	t.Run("create_table_is_idempotent", func(t *testing.T) {
 		schema, _, _ := f.New(t)
 		w := &conformance.Widget{}
-		err := schema.CreateTable(w)
+		err := schema.Sync(w)
 		if err != nil {
-			t.Fatalf("first CreateTable failed: %v", err)
+			t.Fatalf("first Sync failed: %v", err)
 		}
-		err = schema.CreateTable(w)
+		err = schema.Sync(w)
 		if err != nil {
-			t.Fatalf("second CreateTable (idempotency) failed: %v", err)
+			t.Fatalf("second Sync (idempotency) failed: %v", err)
 		}
 	})
 
 	t.Run("sync_adds_new_column", func(t *testing.T) {
 		schema, _, cols := f.New(t)
 		w := &conformance.Widget{}
-		err := schema.CreateTable(w)
+		err := schema.Sync(w)
 		if err != nil {
-			t.Fatalf("CreateTable failed: %v", err)
+			t.Fatalf("Sync failed: %v", err)
 		}
 
 		// Now we'll sync with an extra column
@@ -92,9 +92,9 @@ func Run(t *testing.T, f Factory) {
 	t.Run("drop_table_removes_schema", func(t *testing.T) {
 		schema, _, cols := f.New(t)
 		w := &conformance.Widget{}
-		err := schema.CreateTable(w)
+		err := schema.Sync(w)
 		if err != nil {
-			t.Fatalf("CreateTable failed: %v", err)
+			t.Fatalf("Sync failed: %v", err)
 		}
 
 		err = schema.DropTable(w)
