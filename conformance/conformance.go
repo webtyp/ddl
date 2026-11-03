@@ -25,8 +25,11 @@ func Run(t *testing.T, f Factory) {
 			t.Fatalf("Sync failed: %v", err)
 		}
 		c := cols(w.ModelName())
-		// Expected columns for conformance.Widget are: id, name, qty, active
-		expected := []string{"id", "name", "qty", "active"}
+		// Expected columns come from the model itself: a field added to Widget can never make this list stale.
+		var expected []string
+		for _, f := range conformance.WidgetModel.Fields {
+			expected = append(expected, f.Name)
+		}
 		if len(c) != len(expected) {
 			t.Fatalf("expected columns %v, got %v", expected, c)
 		}
