@@ -13,8 +13,8 @@ import "webtyp.com/storage"
 type Snapshot interface {
 	SchemaInspector
 	// ReadTable returns every row of table, with every column, in the
-	// engine's natural order, each value as text (NULL stays NULL: scan into
-	// *sql.NullString). The engine writes the query
+	// engine's natural order, each value as text: scan into *any and get a
+	// string, or nil for NULL (storage.ScanAny keeps nil only for *any). The engine writes the query
 	// (quoting and casts included), so the caller never writes dialect SQL
 	// and reads every engine the same way.
 	ReadTable(table string) (storage.Rows, error)
