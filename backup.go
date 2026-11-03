@@ -19,8 +19,9 @@ type Snapshot interface {
 	// and reads every engine the same way.
 	ReadTable(table string) (storage.Rows, error)
 	// Notices are what the engine tolerated on purpose while opening the backup, each one a plain sentence for a
-	// beginner: what happened, whether the data is affected, what to do. Empty when nothing happened.
-	Notices() []string
+	// beginner: what happened, whether the data is affected, what to do. Each is built with webtyp.com/fmt.Err so
+	// langc extracts its words and the engine's lang.json translates them. Empty when nothing happened.
+	Notices() []error
 	Close() error
 }
 

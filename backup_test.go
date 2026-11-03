@@ -16,7 +16,7 @@ func (s *memSnapshot) Columns(string) ([]ddl.ColumnInfo, error) {
 	return []ddl.ColumnInfo{{Name: "id", PK: true}}, nil
 }
 func (s *memSnapshot) ReadTable(string) (storage.Rows, error) { return nil, nil }
-func (s *memSnapshot) Notices() []string                      { return nil }
+func (s *memSnapshot) Notices() []error                       { return nil }
 func (s *memSnapshot) Close() error                           { s.closed = true; return nil }
 
 type memFormat struct{ snap *memSnapshot }
