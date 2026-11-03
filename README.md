@@ -16,5 +16,5 @@ in order, with its step — what `webtyp.com/erd` draws as an app's database dia
 
 `ddl.BackupFormat` is what an engine knows about its own backup files: `OpenBackup(path)` returns a read-only
 `ddl.Snapshot` — its tables and columns (`SchemaInspector`) and each table's rows as text (`ReadTable`), with no dialect
-SQL in the caller. `Close` releases it. Implemented by each engine (`webtyp.com/postgres`: a `pg_dump` archive);
+SQL in the caller, and `Notices` — plain sentences about anything the engine tolerated while opening it. `Close` releases it. Implemented by each engine (`webtyp.com/postgres`: a `pg_dump` archive);
 consumed by `webtyp.com/dataimport` to bring a legacy system's data into an app. Contract: [backup.go](backup.go).

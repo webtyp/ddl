@@ -18,6 +18,9 @@ type Snapshot interface {
 	// (quoting and casts included), so the caller never writes dialect SQL
 	// and reads every engine the same way.
 	ReadTable(table string) (storage.Rows, error)
+	// Notices are what the engine tolerated on purpose while opening the backup, each one a plain sentence for a
+	// beginner: what happened, whether the data is affected, what to do. Empty when nothing happened.
+	Notices() []string
 	Close() error
 }
 
