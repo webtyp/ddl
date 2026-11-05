@@ -1,6 +1,7 @@
 package ddl
 
 import (
+	"webtyp.com/fmt"
 	"webtyp.com/model"
 	"webtyp.com/storage"
 )
@@ -21,10 +22,10 @@ type schemaModel struct {
 	fields []model.Field
 }
 
-func (s *schemaModel) ModelName() string             { return s.name }
-func (s *schemaModel) Schema() []model.Field         { return s.fields }
-func (s *schemaModel) Pointers() []any               { return nil }
-func (s *schemaModel) IsNil() bool                   { return s == nil }
+func (s *schemaModel) ModelName() string              { return s.name }
+func (s *schemaModel) Schema() []model.Field          { return s.fields }
+func (s *schemaModel) Pointers() []any                { return nil }
+func (s *schemaModel) IsNil() bool                    { return s == nil }
 func (s *schemaModel) EncodeFields(model.FieldWriter) {}
 func (s *schemaModel) DecodeFields(model.FieldReader) {}
 
@@ -63,8 +64,8 @@ func (d *DB) Sync(models ...model.Model) error {
 		}
 	} else if hasInspect {
 		conn = boundConnWithSchema{
-			boundConn:         boundConn{TxBoundExecutor: bound, Compiler: dmlCompiler},
-			SchemaInspector:   inspect,
+			boundConn:       boundConn{TxBoundExecutor: bound, Compiler: dmlCompiler},
+			SchemaInspector: inspect,
 		}
 	}
 
@@ -152,11 +153,11 @@ func (d *DB) syncModel(m model.Model) error {
 		oldName, hasOld := oldNames[field.Name] // nil-map read is safe: returns "", false
 		if hasOld && contains(existingCols, oldName) {
 			if err := d.execDDL(Stmt{Op: OpRenameColumn, Table: tableName, Column: &field, OldName: oldName}, m); err != nil {
-				d.logw("sync:", tableName, "rename column", oldName, "to", field.Name, "failed:", err)
+				return wrapSyncErr(fmt.Errf("%s: rename column %s to %s: %v", tableName, oldName, field.Name, err))
 			}
 		} else {
 			if err := d.execDDL(Stmt{Op: OpAddColumn, Table: tableName, Column: &field}, m); err != nil {
-				d.logw("sync:", tableName, "add column", field.Name, "failed:", err)
+				return wrapSyncErr(fmt.Errf("%s: add column %s: %v", tableName, field.Name, err))
 			}
 		}
 	}
@@ -182,26 +183,25 @@ func (d *DB) syncModel(m model.Model) error {
 			continue
 		}
 
-		// Safe check: SELECT 1 FROM <table> WHERE <col> IS NOT NULL LIMIT 1 — this is a DML
+		// Safe check: SELECT <col> FROM <table> WHERE <col> IS NOT NULL LIMIT 1 (a literal "1" is quoted as a column by
+		// the postgres compiler) — this is a DML
 		// read. Compiled with prober's Compiler half (storage.Compiler) — the SAME conn used for
 		// Exec, not the DDL compiler. ddl.Stmt/ddl.Op cannot express a SELECT with
 		// conditions — don't try; reuse storage.Query/storage.Condition as-is for this one case.
 		qCheck := storage.Query{
 			Action:     storage.ActionReadAll,
 			Table:      tableName,
-			Columns:    []string{"1"},
+			Columns:    []string{col},
 			Conditions: []storage.Condition{storage.IsNotNull(col)},
 			Limit:      1,
 		}
 		plan, err := prober.Compile(qCheck, m)
 		if err != nil {
-			d.logw("sync:", tableName, "safe drop check compile failed for column", col, ":", err)
-			continue
+			return wrapSyncErr(fmt.Errf("%s: check column %s before dropping it: %v", tableName, col, err))
 		}
 		rows, err := prober.Query(plan.Query, plan.Args...)
 		if err != nil {
-			d.logw("sync:", tableName, "safe drop check query failed for column", col, ":", err)
-			continue
+			return wrapSyncErr(fmt.Errf("%s: check column %s before dropping it: %v", tableName, col, err))
 		}
 		hasData := rows.Next()
 		rows.Close()
@@ -211,7 +211,7 @@ func (d *DB) syncModel(m model.Model) error {
 		}
 
 		if err := d.execDDL(Stmt{Op: OpDropColumn, Table: tableName, ColumnName: col}, m); err != nil {
-			d.logw("sync:", tableName, "drop column", col, "failed:", err)
+			return wrapSyncErr(fmt.Errf("%s: drop column %s: %v", tableName, col, err))
 		}
 	}
 	return nil
