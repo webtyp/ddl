@@ -28,3 +28,5 @@ flowchart TD
     P -->|yes| Q[Kept and logged]
     P -->|no| R[DROP COLUMN]
 ```
+
+A column kept because it holds data is what DB.Leftovers lists: [LEFTOVERS_FLOW.md](LEFTOVERS_FLOW.md).

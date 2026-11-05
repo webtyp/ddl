@@ -1,0 +1,13 @@
+{
+  "languages": ["es", "zh", "hi", "ar", "pt", "fr", "de", "ru"],
+  "keys": {
+    "are required": ["son obligatorios", "是必需的", "आवश्यक हैं", "مطلوبة", "são obrigatórios", "sont obligatoires", "sind erforderlich", "обязательны"],
+    "ddl: capture: step": ["ddl: captura: paso", "ddl: 捕获: 步骤", "ddl: कैप्चर: चरण", "ddl: الالتقاط: الخطوة", "ddl: captura: etapa", "ddl: capture : étape", "ddl: Erfassung: Schritt", "ddl: захват: шаг"],
+    "ddl: circular FK dependency detected": ["ddl: se detectó una dependencia circular de claves foráneas", "ddl: 检测到外键循环依赖", "ddl: विदेशी कुंजी की चक्रीय निर्भरता मिली", "ddl: تم اكتشاف اعتماد دائري للمفاتيح الخارجية", "ddl: dependência circular de chaves estrangeiras detectada", "ddl: dépendance circulaire de clés étrangères détectée", "ddl: zirkuläre Fremdschlüssel-Abhängigkeit erkannt", "ddl: обнаружена циклическая зависимость внешних ключей"],
+    "ddl: copy column:": ["ddl: copiar columna:", "ddl: 复制列:", "ddl: कॉलम कॉपी करें:", "ddl: نسخ العمود:", "ddl: copiar coluna:", "ddl: copier la colonne :", "ddl: Spalte kopieren:", "ddl: копирование столбца:"],
+    "ddl: drop column:": ["ddl: borrar columna:", "ddl: 删除列:", "ddl: कॉलम हटाएँ:", "ddl: حذف العمود:", "ddl: remover coluna:", "ddl: supprimer la colonne :", "ddl: Spalte löschen:", "ddl: удаление столбца:"],
+    "ddl: leftovers: the connection cannot list columns or read data": ["ddl: columnas sobrantes: la conexión no puede listar columnas ni leer datos", "ddl: 遗留列: 连接无法列出列或读取数据", "ddl: बचे हुए कॉलम: कनेक्शन कॉलम सूचीबद्ध नहीं कर सकता या डेटा नहीं पढ़ सकता", "ddl: الأعمدة المتبقية: لا يمكن للاتصال سرد الأعمدة أو قراءة البيانات", "ddl: colunas restantes: a conexão não consegue listar colunas nem ler dados", "ddl: colonnes restantes : la connexion ne peut ni lister les colonnes ni lire les données", "ddl: übrige Spalten: die Verbindung kann weder Spalten auflisten noch Daten lesen", "ddl: оставшиеся столбцы: соединение не может перечислить столбцы или прочитать данные"],
+    "table and column": ["la tabla y la columna", "表和列", "तालिका और कॉलम", "الجدول والعمود", "a tabela e a coluna", "la table et la colonne", "Tabelle und Spalte", "таблица и столбец"],
+    "table, column and moved-to": ["la tabla, la columna y el destino", "表、列和目标列", "तालिका, कॉलम और गंतव्य", "الجدول والعمود والوجهة", "a tabela, a coluna e o destino", "la table, la colonne et la destination", "Tabelle, Spalte und Ziel", "таблица, столбец и назначение"]
+  }
+}

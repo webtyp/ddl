@@ -167,10 +167,7 @@ func (d *DB) syncModel(m model.Model) error {
 	// without it (a DDL-only migration transport) skips the drop rather than
 	// dropping blind: losing a populated column is unrecoverable, and no
 	// probe means no evidence it is empty.
-	prober, canProbe := d.conn.(interface {
-		storage.Compiler
-		Query(query string, args ...any) (storage.Rows, error)
-	})
+	p, canProbe := d.conn.(prober)
 	if !canProbe {
 		if len(existingCols) > 0 {
 			d.logw("sync:", tableName, "safe drop skipped: connection cannot probe for data")
@@ -185,7 +182,7 @@ func (d *DB) syncModel(m model.Model) error {
 
 		// Safe check: SELECT <col> FROM <table> WHERE <col> IS NOT NULL LIMIT 1 (a literal "1" is quoted as a column by
 		// the postgres compiler) — this is a DML
-		// read. Compiled with prober's Compiler half (storage.Compiler) — the SAME conn used for
+		// read. Compiled with p's Compiler half (storage.Compiler) — the SAME conn used for
 		// Exec, not the DDL compiler. ddl.Stmt/ddl.Op cannot express a SELECT with
 		// conditions — don't try; reuse storage.Query/storage.Condition as-is for this one case.
 		qCheck := storage.Query{
@@ -195,11 +192,11 @@ func (d *DB) syncModel(m model.Model) error {
 			Conditions: []storage.Condition{storage.IsNotNull(col)},
 			Limit:      1,
 		}
-		plan, err := prober.Compile(qCheck, m)
+		plan, err := p.Compile(qCheck, m)
 		if err != nil {
 			return wrapSyncErr(fmt.Errf("%s: check column %s before dropping it: %v", tableName, col, err))
 		}
-		rows, err := prober.Query(plan.Query, plan.Args...)
+		rows, err := p.Query(plan.Query, plan.Args...)
 		if err != nil {
 			return wrapSyncErr(fmt.Errf("%s: check column %s before dropping it: %v", tableName, col, err))
 		}
