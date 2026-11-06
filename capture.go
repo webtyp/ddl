@@ -13,6 +13,16 @@ type Step struct {
 	Run  func(conn Execer, compiler Compiler) error
 }
 
+// Schema is an app's whole database declaration: the steps that create its tables, in order, and the columns
+// its models no longer have, with where their data went. An app declares it once, in its generated
+// config/migrations.go (Removed comes from config/removed.go, which webtyp dev writes).
+//
+//	var Schema = ddl.Schema{Steps: []ddl.Step{{Name: "rbac", Run: rbacmigrate.Migrate}}, Removed: Removed}
+type Schema struct {
+	Steps   []Step
+	Removed []Removed
+}
+
 // Table is a table a Step creates.
 type Table struct {
 	Step  string

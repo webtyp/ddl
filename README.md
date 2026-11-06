@@ -56,13 +56,15 @@ func main() {
 		log.Fatal(err)
 	}
 	compiler := conn.(ddl.Compiler)
-	steps := []ddl.Step{{Name: "business_calendar", Run: calendarmigrate.Migrate}}
-	tables, err := ddl.Capture(steps) // which models each step creates, without touching the database
+	schema := ddl.Schema{ // an app's generated config.Schema
+		Steps:   []ddl.Step{{Name: "business_calendar", Run: calendarmigrate.Migrate}},
+		Removed: []ddl.Removed{{Table: "work_calendar_config", Column: "timezone", Note: "moved to config.App.Zone"}},
+	}
+	tables, err := ddl.Capture(schema.Steps) // which models each step creates, without touching the database
 	if err != nil {
 		log.Fatal(err)
 	}
-	removed := []ddl.Removed{{Table: "work_calendar_config", Column: "timezone", Note: "moved to config.App.Zone"}}
-	left, err := ddl.New(conn, compiler).Leftovers(tables, removed)
+	left, err := ddl.New(conn, compiler).Leftovers(tables, schema.Removed)
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -84,6 +84,9 @@ to `LeftoverRowCap` (`More` beyond it — no table is read whole), keeps `Leftov
 app's `Removed` declaration for that column (where the data went). The old name of a renamed field is never listed.
 `DropColumn(table, column)` and `CopyColumn(removed)` (`OpCopyColumn`: fills the destination only where it is NULL)
 act on one column, only by a person's decision — `webtyp dev` asks, production never drops.
+An app hands both halves around as one value, `Schema{Steps, Removed}`: the steps are regenerated from the app's
+modules on every build, while `Removed` holds the developer's answers and is never regenerated, so they live in two
+files but travel together.
 Flow and branches: [diagrams/LEFTOVERS_FLOW.md](diagrams/LEFTOVERS_FLOW.md).
 
 ## Constraints
