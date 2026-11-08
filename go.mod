@@ -4,7 +4,7 @@ go 1.25.2
 
 require (
 	webtyp.com/model v0.2.15
-	webtyp.com/storage v0.1.18
+	webtyp.com/storage v0.1.19
 )
 
 require webtyp.com/fmt v1.0.0
