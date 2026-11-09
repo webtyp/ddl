@@ -2,6 +2,7 @@ package ddl
 
 import (
 	"webtyp.com/model"
+	"webtyp.com/storage"
 )
 
 // Execer is the only capability ddl.DB always needs from its connection:
@@ -12,9 +13,10 @@ import (
 // storage.Conn here excluded connections that legitimately execute DDL and
 // nothing else (a CI migration transport over an HTTP API, for instance).
 // storage.Conn satisfies this interface, so every existing caller is
-// unaffected.
+// unaffected. Exec reports how many rows it changed, as storage.Executor does:
+// an implementation that only runs DDL returns storage.Affected(0).
 type Execer interface {
-	Exec(query string, args ...any) error
+	Exec(query string, args ...any) (storage.Result, error)
 }
 
 // DB applies schema changes through an Execer: Exec for the compiled DDL.
@@ -45,7 +47,8 @@ func (d *DB) createTable(m model.Model) error {
 	if err != nil {
 		return err
 	}
-	return d.conn.Exec(q, args...)
+	_, err = d.conn.Exec(q, args...)
+	return err
 }
 
 // DropTable drops the table for the given model.
@@ -54,7 +57,8 @@ func (d *DB) DropTable(m model.Model) error {
 	if err != nil {
 		return err
 	}
-	return d.conn.Exec(q, args...)
+	_, err = d.conn.Exec(q, args...)
+	return err
 }
 
 // CreateDatabase creates a new database. No model.Model needed — OpCreateDatabase only carries
@@ -64,5 +68,6 @@ func (d *DB) CreateDatabase(name string) error {
 	if err != nil {
 		return err
 	}
-	return d.conn.Exec(q, args...)
+	_, err = d.conn.Exec(q, args...)
+	return err
 }

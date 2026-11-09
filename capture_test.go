@@ -18,7 +18,8 @@ func TestCapture_ListsEveryCreatedTableInOrderWithItsStep(t *testing.T) {
 			if err := ddl.New(conn, c).Sync(&mock.Model{Table: "role"}, &mock.Model{Table: "user_role"}); err != nil {
 				return err
 			}
-			return conn.Exec("CREATE UNIQUE INDEX IF NOT EXISTS role_code ON role(code)")
+			_, err := conn.Exec("CREATE UNIQUE INDEX IF NOT EXISTS role_code ON role(code)")
+			return err
 		}},
 	}
 	tables, err := ddl.Capture(steps)

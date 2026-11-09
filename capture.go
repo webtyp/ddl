@@ -3,6 +3,7 @@ package ddl
 import (
 	"webtyp.com/fmt"
 	"webtyp.com/model"
+	"webtyp.com/storage"
 )
 
 // Step is one module's migration, named so an error and the database diagram say which module it is.
@@ -53,7 +54,7 @@ type recorder struct {
 	tables []Table
 }
 
-func (r *recorder) Exec(string, ...any) error { return nil }
+func (r *recorder) Exec(string, ...any) (storage.Result, error) { return storage.Affected(0), nil }
 
 func (r *recorder) CompileDDL(s Stmt, m model.Model) (string, []any, error) {
 	if s.Op == OpCreateTable {

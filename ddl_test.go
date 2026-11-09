@@ -433,9 +433,9 @@ type ddlOnlyConn struct {
 	executed []string
 }
 
-func (d *ddlOnlyConn) Exec(query string, args ...any) error {
+func (d *ddlOnlyConn) Exec(query string, args ...any) (storage.Result, error) {
 	d.executed = append(d.executed, query)
-	return nil
+	return storage.Affected(0), nil
 }
 
 type ddlOnlyWithIntro struct {

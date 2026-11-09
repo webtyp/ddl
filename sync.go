@@ -219,7 +219,8 @@ func (d *DB) execDDL(s Stmt, m model.Model) error {
 	if err != nil {
 		return err
 	}
-	return d.conn.Exec(q, args...)
+	_, err = d.conn.Exec(q, args...)
+	return err
 }
 
 // contains, schemaHasColumn, isRenameSource: linear-scan helpers — no map[K]V anywhere in this
