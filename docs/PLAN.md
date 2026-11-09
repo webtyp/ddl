@@ -2,8 +2,10 @@
 PLAN: "refactor!: Exec reports rows affected and a duplicate key (storage.Result, storage.Duplicate) — ddl"
 EXECUTOR: jules
 REVIEWER: none
-STATUS: running
+STATUS: review
 SESSION: 8770781900522657056
+PR: https://github.com/webtyp/ddl/pull/5
+REVIEWED_COMMIT: 59a5ade136e52634574b71fc747333ad036204e6
 ---
 
 > Read AGENTS.md at the repo root before any change.
