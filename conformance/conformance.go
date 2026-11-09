@@ -183,7 +183,7 @@ func insertWidget(t *testing.T, conn storage.Conn, id, note string) {
 	if err != nil {
 		t.Fatalf("compile insert: %v", err)
 	}
-	if err := conn.Exec(plan.Query, plan.Args...); err != nil {
+	if _, err := conn.Exec(plan.Query, plan.Args...); err != nil {
 		t.Fatalf("insert: %v", err)
 	}
 }

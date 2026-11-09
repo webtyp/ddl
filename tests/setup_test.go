@@ -21,7 +21,7 @@ type fakeConn struct {
 	queries  int // probe queries run
 }
 
-func (c *fakeConn) Exec(string, ...any) error { return nil }
+func (c *fakeConn) Exec(string, ...any) (storage.Result, error) { return storage.Affected(0), nil }
 func (c *fakeConn) Compile(q storage.Query, m model.Model) (storage.Plan, error) {
 	return storage.Plan{Query: "probe " + q.Table + "." + q.Columns[0]}, nil
 }
@@ -47,7 +47,7 @@ func (c *fakeConn) TableColumns(table string) ([]string, error) {
 // execOnly has Exec and nothing else: it cannot probe.
 type execOnly struct{}
 
-func (execOnly) Exec(string, ...any) error { return nil }
+func (execOnly) Exec(string, ...any) (storage.Result, error) { return storage.Affected(0), nil }
 
 type fakeRows struct {
 	values []any
