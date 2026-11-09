@@ -13,7 +13,8 @@ import (
 // storage.Conn here excluded connections that legitimately execute DDL and
 // nothing else (a CI migration transport over an HTTP API, for instance).
 // storage.Conn satisfies this interface, so every existing caller is
-// unaffected.
+// unaffected. Exec reports how many rows it changed, as storage.Executor does:
+// an implementation that only runs DDL returns storage.Affected(0).
 type Execer interface {
 	Exec(query string, args ...any) (storage.Result, error)
 }
