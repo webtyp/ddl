@@ -7,4 +7,4 @@ require (
 	webtyp.com/storage v0.2.3
 )
 
-require webtyp.com/fmt v1.0.1
+require webtyp.com/fmt v1.0.2
