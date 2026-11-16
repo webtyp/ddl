@@ -152,6 +152,28 @@ func Run(t *testing.T, f Factory) {
 		}
 	})
 
+	t.Run("text_search_is_built_and_found", func(t *testing.T) {
+		schema, conn, _ := f.New(t)
+		p := &searchPerson{}
+		if err := schema.Sync(p); err != nil {
+			t.Fatalf("Sync failed: %v", err)
+		}
+		insertPerson(t, conn, "p1", "Luc\u00eda P\u00e9rez", "+56 9 1234 5678")
+		insertPerson(t, conn, "p2", "Bruno D\u00edaz", "+56 9 8765 4321")
+		if err := storage.RewriteTextSearch(conn, p, nil, nil); err != nil {
+			t.Fatalf("RewriteTextSearch failed: %v", err)
+		}
+		for _, c := range []struct{ typed, want string }{
+			{"lucia", "p1"},       // accent and case folded
+			{"56912345678", "p1"}, // digits of a phone typed without spaces
+			{"diaz", "p2"},
+		} {
+			if got := searchPersonIDs(t, conn, c.typed); len(got) != 1 || got[0] != c.want {
+				t.Errorf("search %q = %v, want [%s]", c.typed, got, c.want)
+			}
+		}
+	})
+
 	t.Run("drop_column_drops_a_column_with_data", func(t *testing.T) {
 		schema, conn, cols := f.New(t)
 		w := &conformance.Widget{}
@@ -186,4 +208,60 @@ func insertWidget(t *testing.T, conn storage.Conn, id, note string) {
 	if _, err := conn.Exec(plan.Query, plan.Args...); err != nil {
 		t.Fatalf("insert: %v", err)
 	}
+}
+
+// searchKind is a text kind that enters text_search (webtyp.com/input does this for Text, Phone, Email, Rut).
+type searchKind struct{ model.Kind }
+
+func (searchKind) SearchableText() {}
+
+// searchPerson is a table with two fields in text_search.
+type searchPerson struct{ ID, Name, Phone string }
+
+func (p *searchPerson) ModelName() string { return "search_person" }
+func (p *searchPerson) Schema() []model.Field {
+	return []model.Field{
+		{Name: "id", Type: model.Text(), DB: &model.FieldDB{PK: true}},
+		{Name: "name", Type: searchKind{model.Text()}},
+		{Name: "phone", Type: searchKind{model.Text()}},
+	}
+}
+func (p *searchPerson) Pointers() []any                { return []any{&p.ID, &p.Name, &p.Phone} }
+func (p *searchPerson) IsNil() bool                    { return p == nil }
+func (p *searchPerson) EncodeFields(model.FieldWriter) {}
+func (p *searchPerson) DecodeFields(model.FieldReader) {}
+
+// insertPerson writes a row as an older version of the app did: without text_search.
+func insertPerson(t *testing.T, conn storage.Conn, id, name, phone string) {
+	t.Helper()
+	plan, err := conn.Compile(storage.Query{Action: storage.ActionCreate, Table: "search_person", Columns: []string{"id", "name", "phone"}, Values: []any{id, name, phone}}, &searchPerson{})
+	if err != nil {
+		t.Fatalf("compile insert: %v", err)
+	}
+	if _, err := conn.Exec(plan.Query, plan.Args...); err != nil {
+		t.Fatalf("insert: %v", err)
+	}
+}
+
+// searchPersonIDs finds rows the way crud does: one Like per typed word on text_search.
+func searchPersonIDs(t *testing.T, conn storage.Conn, typed string) []string {
+	t.Helper()
+	plan, err := conn.Compile(storage.Query{Action: storage.ActionReadAll, Table: "search_person", Columns: []string{"id"}, Conditions: []storage.Condition{storage.Like(model.FieldTextSearch, "%"+typed+"%")}}, &searchPerson{})
+	if err != nil {
+		t.Fatalf("compile search: %v", err)
+	}
+	rows, err := conn.Query(plan.Query, plan.Args...)
+	if err != nil {
+		t.Fatalf("search: %v", err)
+	}
+	defer rows.Close()
+	var ids []string
+	for rows.Next() {
+		var id string
+		if err := rows.Scan(&id); err != nil {
+			t.Fatalf("scan: %v", err)
+		}
+		ids = append(ids, id)
+	}
+	return ids
 }

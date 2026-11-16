@@ -56,6 +56,9 @@ type recorder struct {
 
 func (r *recorder) Exec(string, ...any) (storage.Result, error) { return storage.Affected(0), nil }
 
+// recordsOnly marks the recorder as a connection without rows: Sync does not rebuild text_search through it.
+func (r *recorder) recordsOnly() {}
+
 func (r *recorder) CompileDDL(s Stmt, m model.Model) (string, []any, error) {
 	if s.Op == OpCreateTable {
 		r.tables = append(r.tables, Table{Step: r.step, Model: m})

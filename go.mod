@@ -3,8 +3,8 @@ module webtyp.com/ddl
 go 1.25.2
 
 require (
-	webtyp.com/model v0.2.23
-	webtyp.com/storage v0.2.3
+	webtyp.com/model v0.2.24
+	webtyp.com/storage v0.2.8
 )
 
-require webtyp.com/fmt v1.0.2
+require webtyp.com/fmt v1.0.3

@@ -46,3 +46,9 @@ Backends prove `CopyColumn` (only empty rows) and `DropColumn` (column with data
 | Every created table is listed in order with its step | [TestCapture_ListsEveryCreatedTableInOrderWithItsStep](../capture_test.go) |
 | A failing step is named in the error | [TestCapture_AFailingStepIsNamed](../capture_test.go) |
 | A backup format opens a snapshot that closes | [TestBackupFormatOpensASnapshotThatCloses](../backup_test.go) |
+| Sync rebuilds text_search of existing rows | [TestTextSearch_SyncRebuildsExistingRows](../tests/text_search_test.go) |
+| Sync adds the text_search column | [TestTextSearch_SyncAddsTheColumn](../tests/text_search_test.go) |
+| Sync rebuilds when the fields that enter change | [TestTextSearch_SyncRebuildsWhenTheFieldsChange](../tests/text_search_test.go) |
+| Sync does not rebuild when nothing changed | [TestTextSearch_SyncDoesNotRebuildWhenNothingChanged](../tests/text_search_test.go) |
+| Sync without reads fails with a clear error | [TestTextSearch_SyncWithoutReadsFails](../tests/text_search_test.go) |
+| Capture records only the model table | [TestTextSearch_CaptureRecordsOnlyTheModelTable](../tests/text_search_test.go) |

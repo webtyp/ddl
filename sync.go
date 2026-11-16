@@ -111,7 +111,7 @@ func (d *DB) syncAll(models ...model.Model) error {
 
 func (d *DB) syncModel(m model.Model) error {
 	tableName := m.ModelName()
-	schema := m.Schema()
+	schema := withTextSearchColumn(m.Schema())
 
 	// 1. Emit OpCreateTable (idempotent)
 	if err := d.createTable(m); err != nil {
@@ -127,7 +127,7 @@ func (d *DB) syncModel(m model.Model) error {
 				d.logw("sync:", tableName, "add column", field.Name, "skipped:", err)
 			}
 		}
-		return nil
+		return d.syncTextSearch(m)
 	}
 
 	// 3. Retrieve existing columns
@@ -172,7 +172,7 @@ func (d *DB) syncModel(m model.Model) error {
 		if len(existingCols) > 0 {
 			d.logw("sync:", tableName, "safe drop skipped: connection cannot probe for data")
 		}
-		return nil
+		return d.syncTextSearch(m)
 	}
 
 	for _, col := range existingCols {
@@ -211,7 +211,7 @@ func (d *DB) syncModel(m model.Model) error {
 			return wrapSyncErr(fmt.Errf("%s: drop column %s: %v", tableName, col, err))
 		}
 	}
-	return nil
+	return d.syncTextSearch(m)
 }
 
 func (d *DB) execDDL(s Stmt, m model.Model) error {
