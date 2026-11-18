@@ -129,3 +129,26 @@ func TestLeftovers_ReadErrorStops(t *testing.T) {
 		}
 	}
 }
+
+func TestLeftovers_TextSearchColumnIsNotListed(t *testing.T) {
+	conn := &fakeConn{
+		tables: []tableCols{{"patient", []string{"id", "name", "phone", model.FieldTextSearch}}},
+		values: []any{"lucia perez"},
+	}
+	db := ddl.New(conn, &recordingCompiler{})
+	m := &testModel{table: "patient", fields: patientFields(false)}
+	got, err := db.Leftovers([]ddl.Table{{Step: "patient", Model: m}}, nil)
+	if err != nil || len(got) != 0 || conn.queries != 0 {
+		t.Fatalf("text_search is managed by ddl.Sync, not a leftover: got %v, err=%v, queries=%d", got, err, conn.queries)
+	}
+}
+
+func TestLeftovers_KeptColumnIsNotListed(t *testing.T) {
+	conn, db, tbl := leftoverSetup()
+	conn.values = []any{"America/Santiago"}
+	removed := []ddl.Removed{{Table: "work_calendar_config", Column: "timezone", Keep: true}}
+	got, err := db.Leftovers([]ddl.Table{tbl}, removed)
+	if err != nil || len(got) != 0 || conn.queries != 0 {
+		t.Fatalf("kept column must not be listed again: got %v, err=%v, queries=%d", got, err, conn.queries)
+	}
+}

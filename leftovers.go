@@ -28,6 +28,7 @@ type Removed struct {
 	Column  string // the column the model no longer has
 	MovedTo string // column of the same table that receives the data (CopyColumn); "" = none
 	Note    string // where the data went, in plain words; "" = nobody said
+	Keep    bool   // true = developer chose to keep this column; Leftovers skips it
 }
 
 // Leftover is a column the database keeps although the model no longer has it, because it holds data.
@@ -73,8 +74,13 @@ func (d *DB) Leftovers(tables []Table, removed []Removed) ([]Leftover, error) {
 		if rp, ok := t.Model.(RenameProvider); ok {
 			oldNames = rp.OldNames()
 		}
+		schema := withTextSearchColumn(t.Model.Schema())
 		for _, col := range cols {
-			if schemaHasColumn(t.Model.Schema(), col) || isRenameSource(oldNames, col) {
+			if schemaHasColumn(schema, col) || isRenameSource(oldNames, col) {
+				continue
+			}
+			r := findRemoved(removed, name, col)
+			if r.Keep {
 				continue
 			}
 			l, err := probeColumn(p, t.Model, name, col)
@@ -84,7 +90,7 @@ func (d *DB) Leftovers(tables []Table, removed []Removed) ([]Leftover, error) {
 			if l.Rows == 0 {
 				continue
 			}
-			l.Removed = findRemoved(removed, name, col)
+			l.Removed = r
 			out = append(out, l)
 		}
 	}

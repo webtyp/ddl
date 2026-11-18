@@ -25,6 +25,8 @@
 | Counting stops at `LeftoverRowCap`, `More` says there are more; 3 samples | [TestLeftovers_CountStopsAtTheCap](../tests/leftovers_test.go) |
 | The app's `Removed` for that table and column travels with the leftover | [TestLeftovers_DeclarationIsAttached](../tests/leftovers_test.go) |
 | The old name of a renamed field is never listed nor read | [TestLeftovers_RenameSourceIsNotListed](../tests/leftovers_test.go) |
+| A column the app declared as kept (`Keep`) is not listed again | [TestLeftovers_KeptColumnIsNotListed](../tests/leftovers_test.go) |
+| The `text_search` column belongs to `Sync`, never a leftover | [TestLeftovers_TextSearchColumnIsNotListed](../tests/leftovers_test.go) |
 | A table listed by two steps is read once | [TestLeftovers_SameTableTwiceIsReadOnce](../tests/leftovers_test.go) |
 | Without listing columns and reading data there is no evidence: error | [TestLeftovers_ConnectionWithoutProbeFails](../tests/leftovers_test.go) |
 | Listing columns fails → error naming the table, nothing returned | [TestLeftovers_ListColumnsErrorStops](../tests/leftovers_test.go) |
